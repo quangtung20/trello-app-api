@@ -1,0 +1,25 @@
+{
+  "name": "trello-app-api",
+  "version": "1.0.0",
+  "description": "API for trello clone app",
+  "main": "src/server.js",
+  "type": "module",
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quangtung20/trello-app-api.git"
+  },
+  "author": "quangtung",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quangtung20/trello-app-api/issues"
+  },
+  "homepage": "https://github.com/quangtung20/trello-app-api#readme",
+  "dependencies": {
+    "@babel/eslint-parser": "^7.15.8",
+    "express": "^4.17.1"
+  }
+}
