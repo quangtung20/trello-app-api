@@ -14,4 +14,4 @@ const mapOrder2 = (array, order, key) => {
 }
 
 
-module.exports = { mapOrder, mapOrder2 };
+export { mapOrder, mapOrder2 };

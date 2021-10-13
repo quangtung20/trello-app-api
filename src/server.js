@@ -1,5 +1,5 @@
 import express from 'express'
-import { mapOrder, mapOrder2 } from './ultilities/sorts';
+import { mapOrder, mapOrder2 } from '*/ultilities/sorts';
 const app = express();
 
 const port = 8017;
