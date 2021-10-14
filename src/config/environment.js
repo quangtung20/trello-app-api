@@ -2,6 +2,7 @@ import dotEnv from 'dotenv';
 dotEnv.config();
 export const env = {
     MONGODB_URI: process.env.MONGODB_URI,
-    HOST: process.env.HOST,
-    PORT: process.env.PORT,
+    DATABASE_NAME: process.env.DATABASE_NAME,
+    HOST: process.env.APP_HOST,
+    PORT: process.env.APP_PORT,
 }
