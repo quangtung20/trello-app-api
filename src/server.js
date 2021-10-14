@@ -1,11 +1,16 @@
 import express from 'express'
-import { mapOrder, mapOrder2 } from '*/ultilities/sorts';
+import { connectDB } from '*/config/mongodb';
+import { env } from '*/config/environment';
+
 const app = express();
 
-const port = 8017;
+const port = env.PORT;
+connectDB();
+
 app.get('/', (req, res) => {
     res.send('hello world');
 })
+
 
 app.listen(port, () => {
     console.log('app listen on port :', port);
