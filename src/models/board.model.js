@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import Joi from 'joi';
 import { getDB } from '../config/mongodb';
 //define board colection
@@ -15,6 +16,20 @@ const validateSchema = async (data) => {
     return await boardCollectionSchema.validateAsync(data, { abortEarly: false });//log ra het cac loi
 }
 
+const pushColumnOrder = async (boardId, columnId) => {
+    try {
+        const result = await getDB().collection(boardCollectionName).findOneAndUpdate(
+            { _id: ObjectId(boardId) },
+            { $push: { columnOrder: columnId } },
+            { returnOriginal: false }
+        )
+
+        return result.value
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 const createNew = async (data) => {
     try {
         const value = await validateSchema(data);
@@ -25,4 +40,54 @@ const createNew = async (data) => {
     }
 }
 
-export const boardModel = { createNew }
+/**
+ * 
+ * @param {string} boardId 
+ * @param {string} columnId 
+ */
+
+
+const getFullBoard = async (boardId) => {
+    try {
+        const result = await getDB().collection(boardCollectionName).aggregate([
+            {
+                $match: {
+                    _id: ObjectId(boardId)
+                }
+            },// gan giong where
+            {
+                $lookup: { //tao quan he bang board va bang column va lay dc cuc data cua column ra
+                    from: 'columns',
+                    // 2 dong nay phai so sanh localField vs boardId bang 
+                    //nhau moi lay ra duoc du lieu ben trong cuc data
+                    localField: '_id',
+                    foreignField: 'boardId',
+                    as: 'columns'
+                }
+            },
+            {
+                $lookup: { //tao quan he bang board va bang column va lay dc cuc data cua column ra
+                    from: 'cards',
+                    // 2 dong nay phai so sanh localField vs boardId bang 
+                    //nhau moi lay ra duoc du lieu ben trong cuc data
+                    localField: '_id',
+                    foreignField: 'boardId',
+                    as: 'cards'
+                }
+            }
+        ]).toArray();
+
+        console.log(result);
+
+        return result[0] || {};
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+
+export const boardModel = {
+    createNew,
+    getFullBoard,
+    pushColumnOrder,
+}
