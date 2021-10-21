@@ -1,6 +1,8 @@
-import { ObjectId } from 'mongodb';
+import { ObjectID } from 'mongodb';
 import Joi from 'joi';
 import { getDB } from '../config/mongodb';
+import { columnModel } from './column.model';
+import { cardModel } from './card.model';
 //define board colection
 
 const boardCollectionName = 'boards';
@@ -19,12 +21,12 @@ const validateSchema = async (data) => {
 const pushColumnOrder = async (boardId, columnId) => {
     try {
         const result = await getDB().collection(boardCollectionName).findOneAndUpdate(
-            { _id: ObjectId(boardId) },
+            { _id: ObjectID(boardId) },
             { $push: { columnOrder: columnId } },
             { returnOriginal: false }
         )
 
-        return result.value
+        return result.value;
     } catch (error) {
         throw new Error(error);
     }
@@ -34,7 +36,7 @@ const createNew = async (data) => {
     try {
         const value = await validateSchema(data);
         const result = await getDB().collection(boardCollectionName).insertOne(value);
-        return result;
+        return result.ops[0];
     } catch (error) {
         throw new Error(error);
     }
@@ -52,12 +54,12 @@ const getFullBoard = async (boardId) => {
         const result = await getDB().collection(boardCollectionName).aggregate([
             {
                 $match: {
-                    _id: ObjectId(boardId)
+                    _id: ObjectID(boardId)
                 }
             },// gan giong where
             {
                 $lookup: { //tao quan he bang board va bang column va lay dc cuc data cua column ra
-                    from: 'columns',
+                    from: columnModel.columnCollectionName,
                     // 2 dong nay phai so sanh localField vs boardId bang 
                     //nhau moi lay ra duoc du lieu ben trong cuc data
                     localField: '_id',
@@ -67,7 +69,7 @@ const getFullBoard = async (boardId) => {
             },
             {
                 $lookup: { //tao quan he bang board va bang column va lay dc cuc data cua column ra
-                    from: 'cards',
+                    from: cardModel.cardCollectionName,
                     // 2 dong nay phai so sanh localField vs boardId bang 
                     //nhau moi lay ra duoc du lieu ben trong cuc data
                     localField: '_id',

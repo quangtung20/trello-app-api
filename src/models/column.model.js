@@ -1,11 +1,11 @@
 import Joi from 'joi';
 import { getDB } from '../config/mongodb';
-import { ObjectId } from 'mongodb';
+import { ObjectID } from 'mongodb';
 //define column colection
 
 const columnCollectionName = 'columns';
 const columnCollectionSchema = Joi.object({
-    boardId: Joi.string().required(),// also objectId when create new
+    boardId: Joi.string().required(),// also ObjectID when create new
     title: Joi.string().required().min(3).max(30).trim(),
     cardOrder: Joi.array().items(Joi.string()).default([]),
     createdAt: Joi.date().timestamp().default(Date.now()),
@@ -20,7 +20,7 @@ const validateSchema = async (data) => {
 const pushCardOrder = async (columnId, cardId) => {
     try {
         const result = await getDB().collection(columnCollectionName).findOneAndUpdate(
-            { _id: ObjectId(columnId) },
+            { _id: ObjectID(columnId) },
             { $push: { cardOrder: cardId } },
             { returnOriginal: false }
         )
@@ -36,10 +36,10 @@ const createNew = async (data) => {
         const validateValue = await validateSchema(data);
         const insertValue = {
             ...validateValue,
-            boardId: ObjectId(validateValue.boardId)
+            boardId: ObjectID(validateValue.boardId)
         };
         const result = await getDB().collection(columnCollectionName).insertOne(insertValue);
-        return result;
+        return result.ops[0];
     } catch (error) {
         throw new Error(error);
     }
@@ -48,7 +48,7 @@ const createNew = async (data) => {
 const update = async (id, data) => {
     try {
         const result = await getDB().collection(columnCollectionName).findOneAndUpdate(
-            { _id: ObjectId(id) },
+            { _id: ObjectID(id) },
             { $set: data },
             { returnOriginal: false }
         )
@@ -63,4 +63,5 @@ export const columnModel = {
     createNew,
     update,
     pushCardOrder,
+    columnCollectionName,
 }
