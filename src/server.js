@@ -1,8 +1,10 @@
-import express from 'express'
+import express from 'express';
+import cors from 'cors';
 import { connectDB, getDB } from '*/config/mongodb';
 import { env } from '*/config/environment';
 import { boardModel } from './models/board.model';
 import { apiV1 } from './routes/v1';
+import { corsOptions } from './config/cors';
 
 
 
@@ -21,6 +23,7 @@ connectDB()
 
 const bootServer = () => {
     const app = express();
+    app.use(cors(corsOptions));
     // enable req.body 
     app.use(express.json());
     app.use('/v1/api', apiV1);
@@ -29,3 +32,4 @@ const bootServer = () => {
         console.log('app listen on port :', port);
     })
 }
+
