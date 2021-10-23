@@ -28,8 +28,11 @@ const bootServer = () => {
     app.use(express.json());
     app.use('/v1/api', apiV1);
 
-    app.listen(port, () => {
-        console.log('app listen on port :', port);
+    // app.listen(port, () => {
+    //     console.log('app listen on port :', port);
+    // })
+    app.listen(process.env.PORT, () => {
+        console.log(`app listen on port : ${process.env.PORT}`);
     })
 }
 
